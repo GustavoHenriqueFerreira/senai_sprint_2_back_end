@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using senai_01_rental_webAPI.Domains;
 using senai_01_rental_webAPI.Interfaces;
 using senai_01_rental_webAPI.Repositories;

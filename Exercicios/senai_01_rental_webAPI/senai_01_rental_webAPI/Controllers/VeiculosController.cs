@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using senai_01_rental_webAPI.Domains;
 using senai_01_rental_webAPI.Interfaces;
 using senai_01_rental_webAPI.Repositories;
@@ -53,7 +54,7 @@ namespace senai_01_rental_webAPI.Controllers
         }
 
         [HttpPut("{idVeiculo}")]
-        public IActionResult Put(int idVeiculo, VeiculoDomain VeiculoAtualizado)
+        public IActionResult Put(int idVeiculo, VeiculoDomain veiculoAtualizado)
         {
             VeiculoDomain veiculoProcurado = _VeiculoRepository.BuscarPorId(idVeiculo);
 
@@ -69,7 +70,7 @@ namespace senai_01_rental_webAPI.Controllers
 
             try
             {
-                _VeiculoRepository.AtualizarIdUrl(idVeiculo, VeiculoAtualizado);
+                _VeiculoRepository.AtualizarIdUrl(idVeiculo, veiculoAtualizado);
 
                 return NoContent();
             }

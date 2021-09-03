@@ -1,6 +1,8 @@
 USE M_Rental;
 GO
 
+SELECT * FROM modelo
+
 SELECT dataRetirada, dataDevolucao, nomeCliente, sobrenomeCliente, nomeModelo
 FROM ALUGUEL
 LEFT JOIN CLIENTE
@@ -36,18 +38,20 @@ GO
 
 SELECT idVeiculo, placa, nomeMarca, nomeModelo, anoModelo
 FROM VEICULO
-LEFT JOIN MODELO
-ON VEICULO.idEmpresa = MODELO.idModelo
-LEFT JOIN MARCA
+INNER JOIN MODELO
+ON VEICULO.idModelo = MODELO.idModelo
+INNER JOIN MARCA
 ON MARCA.idMarca = MODELO.idMarca;
 GO
 
-SELECT idVeiculo, placa, nomeMarca, nomeModelo, anoModelo
+SELECT idVeiculo, placa, nomeMarca, nomeModelo, anoModelo, nomeEmpresa
 FROM VEICULO
 LEFT JOIN MODELO
 ON VEICULO.idEmpresa = MODELO.idModelo
 LEFT JOIN MARCA
 ON MARCA.idMarca = MODELO.idMarca
+LEFT JOIN EMPRESA
+ON VEICULO.idEmpresa = EMPRESA.idEmpresa
 WHERE idVeiculo = 1;
 GO
 

@@ -1,4 +1,4 @@
-DROP DATABASE M_Rental;
+CREATE DATABASE M_Rental;
 GO
 
 USE M_Rental;
