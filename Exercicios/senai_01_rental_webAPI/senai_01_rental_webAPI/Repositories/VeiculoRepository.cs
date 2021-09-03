@@ -15,14 +15,14 @@ namespace senai_01_rental_webAPI.Repositories
         {
             using (SqlConnection con = new SqlConnection(Conexao))
             {
-                string queryUptadeIdBody = "UPDATE VEICULO SET idEmpresa = @idEmpresa, idModelo = @idModelo, placa = @placa" + "WHERE idVeiculo = @idVeiculoAtualizado";
+                string queryUptadeIdBody = "UPDATE VEICULO SET idEmpresa = @idEmpresa, idModelo = @idModelo, placa = @placa WHERE idVeiculo = @idVeiculo";
 
                 con.Open();
 
                 using (SqlCommand cmd = new SqlCommand(queryUptadeIdBody, con))
                 {
-                    cmd.Parameters.AddWithValue("@idEmpresa", veiculoAtualizado.idModelo);
-                    cmd.Parameters.AddWithValue("@idModelo", veiculoAtualizado.idEmpresa);
+                    cmd.Parameters.AddWithValue("@idEmpresa", veiculoAtualizado.idEmpresa);
+                    cmd.Parameters.AddWithValue("@idModelo", veiculoAtualizado.idModelo);
                     cmd.Parameters.AddWithValue("@placa", veiculoAtualizado.placa);
                     cmd.Parameters.AddWithValue("@idVeiculo", idVeiculo);
 
@@ -35,12 +35,7 @@ namespace senai_01_rental_webAPI.Repositories
         {
             using (SqlConnection con = new SqlConnection(Conexao))
             {
-                string querySearchById = "SELECT IdVeiculo, IdEmpresa, IdModelo, placa, nomeModelo, anoModelo, nomeEmpresa FROM VEICULO " +
-                    "INNER JOIN EMPRESA " +
-                    "ON EMPRESA.IdEmpresa = VEICULO.IdEmpresa" +
-                    "INNER JOIN MODELO" +
-                    "ON VEICULO.IdModelo = MODELO.IdModelo" +
-                    "WHERE VEICULO.IdVeiculo = @Idveiculo";
+                string querySearchById = @"SELECT idVeiculo, V.idEmpresa, nomeEmpresa, V.idModelo, M.idMarca, nomeMarca, nomeModelo, anoModelo, placa FROM VEICULO V INNER JOIN EMPRESA E ON V.idEmpresa = E.idEmpresa INNER JOIN MODELO M ON V.idModelo = M.idModelo INNER JOIN MARCA MA ON M.idMarca = MA.idMarca WHERE idVeiculo = @idVeiculo";
 
                 con.Open();
 
@@ -55,21 +50,25 @@ namespace senai_01_rental_webAPI.Repositories
                     {
                         VeiculoDomain veiculoProcurado = new VeiculoDomain()
                         {
-                            idVeiculo = Convert.ToInt32(rdr[0]),
-                            placa = rdr[3].ToString(),
+                            idVeiculo = Convert.ToInt32(rdr["idVeiculo"]),
+                            idEmpresa = Convert.ToInt32(rdr["idEmpresa"]),
+                            idModelo = Convert.ToInt32(rdr["idModelo"]),
+                            placa = rdr["placa"].ToString(),
                             empresa = new EmpresaDomain()
                             {
-                                idEmpresa = Convert.ToInt32(rdr[1]),
-                                nomeEmpresa = rdr[6].ToString()
+                                idEmpresa = Convert.ToInt32(rdr["idEmpresa"]),
+                                nomeEmpresa = rdr["nomeEmpresa"].ToString()
                             },
                             modelo = new ModeloDomain()
                             {
-                                idModelo = Convert.ToInt32(rdr[2]),
-                                nomeModelo = rdr[4].ToString(),
-                                anoModelo = Convert.ToDateTime(rdr[5]),
+                                idModelo = Convert.ToInt32(rdr["idModelo"]),
+                                idMarca = Convert.ToInt32(rdr["idMarca"]),
+                                nomeModelo = rdr["nomeModelo"].ToString(),
+                                anoModelo = Convert.ToDateTime(rdr["anoModelo"]),
                                 marca = new MarcaDomain()
                                 {
-                                    nomeMarca = rdr[3].ToString()
+                                    idMarca = Convert.ToInt32(rdr["idMarca"]),
+                                    nomeMarca = rdr["nomeMarca"].ToString()
                                 }
                             }
                         };
@@ -84,15 +83,14 @@ namespace senai_01_rental_webAPI.Repositories
         {
             using (SqlConnection con = new SqlConnection(Conexao))
             {
-                string queryInsert = "INSERT INTO veiculo (IdEmpresa, IdModelo, placaVeiculo) VALUES (@IdEmpresa, @IdModelo, @placaVeiculo);";
+                string queryInsert = "INSERT INTO VEICULO (idEmpresa, idModelo, placa) VALUES(@idEmpresa, @idModelo, @placa)";
 
                 con.Open();
                 using (SqlCommand cmd = new SqlCommand(queryInsert, con))
                 {
-
-                    cmd.Parameters.AddWithValue("@IdEmpresa", novoVeiculo.idEmpresa);
-                    cmd.Parameters.AddWithValue("@IdModelo", novoVeiculo.idModelo);
-                    cmd.Parameters.AddWithValue("@placaVeiculo", novoVeiculo.placa);
+                    cmd.Parameters.AddWithValue("@idEmpresa", novoVeiculo.idEmpresa);
+                    cmd.Parameters.AddWithValue("@idModelo", novoVeiculo.idModelo);
+                    cmd.Parameters.AddWithValue("@placa", novoVeiculo.placa);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -104,12 +102,12 @@ namespace senai_01_rental_webAPI.Repositories
         {
             using (SqlConnection con = new SqlConnection(Conexao))
             {
-                string queryDelete = "DELETE FROM veiculo WHERE IdVeiculo = @IdVeiculo";
+                string queryDelete = "DELETE FROM VEICULO WHERE idVEICULO = @idVeiculo";
 
                 con.Open();
                 using (SqlCommand cmd = new SqlCommand(queryDelete, con))
                 {
-                    cmd.Parameters.AddWithValue("@IdVeiculo", idVeiculo);
+                    cmd.Parameters.AddWithValue("@idVeiculo", idVeiculo);
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -134,25 +132,25 @@ namespace senai_01_rental_webAPI.Repositories
                     {
                         VeiculoDomain veiculo = new VeiculoDomain
                         {
-                            idVeiculo = Convert.ToInt32(rdr[0]),
-                            idEmpresa = Convert.ToInt32(rdr[1]),
-                            idModelo = Convert.ToInt32(rdr[3]),
-                            placa = rdr[8].ToString(),
+                            idVeiculo = Convert.ToInt32(rdr["idVeiculo"]),
+                            idEmpresa = Convert.ToInt32(rdr["idEmpresa"]),
+                            idModelo = Convert.ToInt32(rdr["idModelo"]),
+                            placa = rdr["placa"].ToString(),
                             empresa = new EmpresaDomain()
                             {
-                                idEmpresa = Convert.ToInt32(rdr[1]),
-                                nomeEmpresa = rdr[2].ToString()
+                                idEmpresa = Convert.ToInt32(rdr["idEmpresa"]),
+                                nomeEmpresa = rdr["nomeEmpresa"].ToString()
                             },
                             modelo = new ModeloDomain()
                             {
-                                idModelo = Convert.ToInt32(rdr[3]),
-                                idMarca = Convert.ToInt32(rdr[4]),
-                                nomeModelo = rdr[6].ToString(),
-                                anoModelo = Convert.ToDateTime(rdr[7]),
+                                idModelo = Convert.ToInt32(rdr["idModelo"]),
+                                idMarca = Convert.ToInt32(rdr["idMarca"]),
+                                nomeModelo = rdr["nomeModelo"].ToString(),
+                                anoModelo = Convert.ToDateTime(rdr["anoModelo"]),
                                 marca = new MarcaDomain()
                                 {
-                                    idMarca = Convert.ToInt32(rdr[4]),
-                                    nomeMarca = rdr[5].ToString()
+                                    idMarca = Convert.ToInt32(rdr["idMarca"]),
+                                    nomeMarca = rdr["nomeMarca"].ToString()
                                 }
                             }
                         };

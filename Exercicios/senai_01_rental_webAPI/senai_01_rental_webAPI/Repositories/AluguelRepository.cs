@@ -10,19 +10,22 @@ namespace senai_01_rental_webAPI.Repositories
 {
     public class AluguelRepository : IAluguelRepository
     {
-        private string Conexao = "Data Source=DESKTOP-E81EO80\\SQLEXPRESS; initial catalog=CATALOGO; user id=sa; pwd=*CaChORrO_16*";
+        private string Conexao = "Data Source=DESKTOP-E81EO80\\SQLEXPRESS; initial catalog=M_Rental; user id=sa; pwd=*CaChORrO_16*";
 
         public void AtualizarIdUrl(int idAluguel, AluguelDomain aluguelAtualizado)
         {
             using (SqlConnection con = new SqlConnection(Conexao))
             {
-                string queryUptadeUrl = "UPTADE ALUGUEL SET dataDevolucao = @dataDevolucao WHERE idAluguel = @idAluguel;";
+                string queryUptadeBody = "UPDATE ALUGUEL SET idVeiculo = @idVeiculo, idCliente = @idCliente, dataRetirada = @dataRetirada, dataDevolucao = @dataDevolucao WHERE idAluguel = @idAluAtualizado";
 
                 con.Open();
 
-                using (SqlCommand cmd = new SqlCommand(queryUptadeUrl, con))
+                using (SqlCommand cmd = new SqlCommand(queryUptadeBody, con))
                 {
-                    cmd.Parameters.AddWithValue("@novaDevolucao", aluguelAtualizado.dataDevolucao);
+                    cmd.Parameters.AddWithValue("@idVeiculo", aluguelAtualizado.idVeiculo);
+                    cmd.Parameters.AddWithValue("@idCliente", aluguelAtualizado.idCliente);
+                    cmd.Parameters.AddWithValue("@dataRetirada", aluguelAtualizado.dataRetirada);
+                    cmd.Parameters.AddWithValue("@dataDevolucao", aluguelAtualizado.dataDevolucao);
                     cmd.Parameters.AddWithValue("@idAluguel", idAluguel);
 
                     cmd.ExecuteNonQuery();
@@ -34,15 +37,7 @@ namespace senai_01_rental_webAPI.Repositories
         {
             using (SqlConnection con = new SqlConnection(Conexao))
             {
-                string querySelecãoId = @"SELECT idAluguel, nomeCliente, sobrenomeCliente, dataRetirada, dataDevolucao, placa, nomeModelo
-FROM ALUGUEL
-LEFT JOIN CLIENTE
-ON ALUGUEL.idCliente = CLIENTE.idCliente
-LEFT JOIN VEICULO
-ON ALUGUEL.idVeiculo = VEICULO.idVeiculo
-LEFT JOIN MODELO
-ON VEICULO.idModelo = Modelo.idModelo 
-WHERE idAluguel = @idAluguel;";
+                string querySelecãoId = @"SELECT * FROM ALUGUEL WHERE idAluguel = @idAluguel";
 
                 con.Open();
 
@@ -56,25 +51,22 @@ WHERE idAluguel = @idAluguel;";
 
                     if (rdr.Read())
                     {
-                        AluguelDomain aluguelProcurado = new AluguelDomain
+                        AluguelDomain aluguelProcurado = new AluguelDomain()
                         {
                             idAluguel = Convert.ToInt32(rdr[0]),
+                            idVeiculo = Convert.ToInt32(rdr[2]),
+                            idCliente = Convert.ToInt32(rdr[1]),
                             dataRetirada = Convert.ToDateTime(rdr[3]),
                             dataDevolucao = Convert.ToDateTime(rdr[4]),
 
                             cliente = new ClienteDomain()
                             {
-                                nomeCliente = rdr[1].ToString(),
-                                sobrenomeCliente = rdr[2].ToString()
+                                idCliente = Convert.ToInt32(rdr[1]),
                             },
 
                             veiculo = new VeiculoDomain()
                             {
-                                placa = rdr[5].ToString(),
-                                modelo = new ModeloDomain()
-                                {
-                                    nomeModelo = rdr[6].ToString(),
-                                }
+                                idVeiculo = Convert.ToInt32(rdr[2]),
                             }
                         };
 
@@ -130,14 +122,7 @@ WHERE idAluguel = @idAluguel;";
             List<AluguelDomain> listaAlugueis = new List<AluguelDomain>();
             using (SqlConnection con = new SqlConnection(Conexao))
             {
-                string querySelectAll = @"SELECT idAluguel, nomeCliente, sobrenomeCliente, dataRetirada, dataDevolucao, placa, nomeModelo
-FROM ALUGUEL
-LEFT JOIN CLIENTE
-ON ALUGUEL.idCliente = CLIENTE.idCliente
-LEFT JOIN VEICULO
-ON ALUGUEL.idVeiculo = VEICULO.idVeiculo
-LEFT JOIN MODELO
-ON VEICULO.idModelo = Modelo.idModelo;";
+                string querySelectAll = @"SELECT * FROM ALUGUEL";
 
                 con.Open();
 
@@ -152,22 +137,19 @@ ON VEICULO.idModelo = Modelo.idModelo;";
                         AluguelDomain aluguel = new AluguelDomain()
                         {
                             idAluguel = Convert.ToInt32(rdr[0]),
+                            idVeiculo = Convert.ToInt32(rdr[2]),
+                            idCliente = Convert.ToInt32(rdr[1]),
                             dataRetirada = Convert.ToDateTime(rdr[3]),
                             dataDevolucao = Convert.ToDateTime(rdr[4]),
 
                             cliente = new ClienteDomain()
                             {
-                                nomeCliente = rdr[1].ToString(),
-                                sobrenomeCliente = rdr[2].ToString()
+                                idCliente = Convert.ToInt32(rdr[1]),
                             },
 
                             veiculo = new VeiculoDomain()
                             {
-                                placa = rdr[5].ToString(),
-                                modelo = new ModeloDomain()
-                                {
-                                    nomeModelo = rdr[6].ToString(),
-                                }
+                                idVeiculo = Convert.ToInt32(rdr[2]),
                             }
                         };
                         listaAlugueis.Add(aluguel);

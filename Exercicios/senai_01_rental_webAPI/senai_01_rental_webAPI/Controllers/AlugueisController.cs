@@ -39,7 +39,7 @@ namespace senai_01_rental_webAPI.Controllers
 
             if (aluguelProcurado == null)
             {
-                return NotFound("Nenhum gênero foi encontrado");
+                return NotFound("Nenhum aluguel foi encontrado");
             }
 
             return Ok(aluguelProcurado);
@@ -53,31 +53,11 @@ namespace senai_01_rental_webAPI.Controllers
             return StatusCode(201);
         }
 
-        [HttpPut("{idAluguel}")]
+        [HttpPut("idAluguel")]
         public IActionResult Put(int idAluguel, AluguelDomain aluguelAtualizado)
         {
-            AluguelDomain aluguelProcurado = _AluguelRepository.BuscarPorId(idAluguel);
-
-            if (aluguelProcurado == null)
-            {
-                return NotFound
-                (new
-                {
-                    mensagem = "Nenhum aluguel foi encontrado",
-                    erro = true
-                });
-            }
-
-            try
-            {
-                _AluguelRepository.AtualizarIdUrl(idAluguel, aluguelAtualizado);
-
-                return NoContent();
-            }
-            catch (Exception erro)
-            {
-                return BadRequest(erro);
-            }
+            _AluguelRepository.AtualizarIdUrl(idAluguel, aluguelAtualizado);
+            return StatusCode(200);
         }
 
         [HttpDelete("{idAluguel}")]

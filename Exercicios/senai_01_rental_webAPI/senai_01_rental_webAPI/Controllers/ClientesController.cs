@@ -27,9 +27,9 @@ namespace senai_01_rental_webAPI.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            List<ClienteDomain> listaGeneros = _ClienteRepository.Listar();
+            List<ClienteDomain> listaClientes = _ClienteRepository.Listar();
 
-            return Ok(listaGeneros);
+            return Ok(listaClientes);
         }
 
         [HttpGet("{idCliente}")]
