@@ -39,7 +39,7 @@ namespace senai_01_rental_webAPI.Controllers
 
             if (aluguelProcurado == null)
             {
-                return NotFound("Nenhum aluguel foi encontrado");
+                return NotFound("Nenhum aluguel foi encontrado!");
             }
 
             return Ok(aluguelProcurado);
